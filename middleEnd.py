@@ -21,7 +21,7 @@ def game():
         # get this player's move;
         currentMove = turn(player)#;
         # while any future attempted moves aren't legal, re-request it (player exclusive);
-        while not(isLegalMove(currentMove)):
+        while not(MovePossible(currentMove,getBoard())):
             # tell the user that the move ain't legal:
             frontEnd.returnFalse()#;
             currentMove = turn("R")#;
