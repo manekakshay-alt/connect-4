@@ -11,11 +11,11 @@ Board=[["n","n","n","n","n","n"],
 
 
 def isTie(board):
-  NopTie=0
+  NopTie=False 
   for row in board:
     for i in row:
       if i=="n":
-        NopTie=1
+        NopTie=True
   return NopTie
 
 
