@@ -11,6 +11,16 @@ Board = [
     ["N", "N", "N", "N", "N", "N"],
 ]
 
+def getBoard():
+    # create a temporary board;
+    temp = []#;
+    # for each column in the current board;
+    for column in Board:
+        temp.append(column[::-1])#;
+    #ENDFOR
+
+    return temp#;
+#ENDMETHOD
 
 def isTie(board):
   NopTie = False
@@ -95,8 +105,9 @@ def clear(board):
   return board
 
 
-for i in range(4):
-  redmove(3, Board)
-  BotMove()
-  print(Board)
-  print(column4inaRow(Board))
+if __name__ == "__main__":
+    for i in range(4):
+        redmove(3, Board)
+        BotMove()
+        print(Board)
+        print(column4inaRow(Board))
