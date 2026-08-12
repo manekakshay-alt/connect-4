@@ -1,0 +1,113 @@
+# import the front end , the back end and the bot, set objects as .frontEnd and .backEnd and .bot:
+from frontEnd import *#;
+# import backEnd;
+# import bot;
+import time#;
+
+class null():
+    def passBoard(self,board):
+        pass#;
+    #ENDMETHOD
+    def getBoard(self):
+        return [ ["R","Y","N","N","N","N"],["R","N","N","N","N","N"],["Y","N","N","N","N","N"],["N","N","N","N","N","N"],["N","N","N","N","N","N"],["N","N","N","N","N","N"],["N","N","N","N","N","N"] ]#;
+    #ENDMETHOD
+    def clear(self):
+        pass#;
+    #ENDMETHOD
+    def getMove(self):
+        return int()#;
+    #ENDMETHOD
+    def isLegalMove(self,move):
+        return True#;
+    #ENDMETHOD
+    def isWin(self):
+        return True#;
+    #ENDMETHO
+    def boardIsFull(self):
+        return False#;
+    #ENDMETHOD
+    def returnTie(self):
+        pass#;
+    #ENDMETHOD
+    def returnWin(self,team):
+        pass#;
+    #ENDMETHOD
+#ENDCLASS
+
+frontEnd = frontEnd()#;
+backEnd = null()#;
+bot = null()#;
+
+#--;
+
+def game():
+    # at the start of the game, clear the board;
+    backEnd.clear()#;
+    currentBoardState = backEnd.getBoard()#;
+    frontEnd.passBoard(currentBoardState)#;
+    
+    # set the player to the user;
+    player = "R"#;
+    currentMove = int()#;
+    playing = True#; // set playing to true as long as the game continues;
+    
+    while playing:
+        # get this player's move;
+        currentMove = turn(player)#;
+        # while any future attempted moves aren't legal, re-request it (player exclusive);
+        while not(backEnd.isLegalMove(currentMove)):
+            # tell the user that the move ain't legal:
+            frontEnd.returnFalse()#;
+            currentMove = turn("R")#;
+        #ENDWHILE
+        # pass the new board to the front end;
+        currentBoardState = backEnd.getBoard()#;
+        frontEnd.passBoard(currentBoardState)#;
+        
+        # if the game has been won or tied, dsiplay and exit;
+        if backEnd.isWin():
+            # tell the user;
+            frontEnd.returnWin(player)#;
+            # exit.
+            playing=False#;
+        elif backEnd.boardIsFull():
+            # tell the user;
+            frontEnd.returnTie()#;
+            # exit.
+            playing=False#;
+        #ENDIF
+        
+        # toggle Player;
+        player = togglePlayer(player)#;
+        # loop;
+    #ENDWHILE
+#ENDMETHOD
+
+def togglePlayer(player):
+    if player=="R":
+        return "Y"#;
+    else:
+        return "R"#;
+    #ENDIF
+#ENDMETHOD
+    
+def turn(player):
+    move = int()#;
+    
+    if player=="Y":
+        move = bot.getMove()#;
+        
+    else:
+        # else, it's the user's turn (R);
+        # get the user's move from the front end once ready;
+        move = frontEnd.getMove()#;
+            
+    #ENDIF
+
+    # return the move retrieved;
+    return move#;
+#ENDMETHOD
+
+
+# prog.
+game()#;
