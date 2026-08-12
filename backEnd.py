@@ -34,7 +34,7 @@ def isTie(board):
 def movePossible(move, board):
   check = 0
   for i in board[move]:
-    if i == "r" or i == "y":
+    if i == "R" or i == "Y":
       check = check + 1
   if check >= 6:
     return False
@@ -46,7 +46,7 @@ def redmove(column, board):
   for i in range(5, -1, -1):
     if movePossible(column, board) == True:
       if board[column][i] == "N":
-        board[column][i] = "r"
+        board[column][i] = "R"
         return board
         break
 
@@ -55,7 +55,7 @@ def yellowmove(column, board):
   for i in range(5, -1, -1):
     if movePossible(column, board) == True:
       if board[column][i] == "N":
-        board[column][i] = "y"
+        board[column][i] = "Y"
         return board
         break
 
@@ -66,10 +66,10 @@ def column4inaRow(board):
     yellow = 0
     winner = 0
     for i in column:
-      if i == "r":
+      if i == "R":
         red = red + 1
         yellow = 0
-      elif i == "y":
+      elif i == "Y":
         yellow = yellow + 1
         red = 0
       else:
