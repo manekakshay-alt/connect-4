@@ -80,8 +80,12 @@ def BotMove():
       legality=True
   yellowmove(choice,Board)
   column4inaRow(Board)
-  
-  
+       
+def clear(board):
+    for columns in board:
+      for row in columns:
+        board[columns][row]="n"
+    return board   
 
 for i in range(4):
   redmove(3,Board)
