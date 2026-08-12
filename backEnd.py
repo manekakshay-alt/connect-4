@@ -16,7 +16,7 @@ def getBoard():
     temp = []#;
     # for each column in the current board;
     for column in Board:
-        temp.append(column[::-1])#;
+        temp.append(column.reverse())#;
     #ENDFOR
 
     return temp#;
