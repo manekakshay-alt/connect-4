@@ -36,7 +36,7 @@ def game():
             frontEnd.returnWin(player)#;
             # exit.
             playing=False#;
-        elif boardIsFull():
+        elif isTie(getBoard()):
             # tell the user;
             frontEnd.returnTie()#;
             # exit;
