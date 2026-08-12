@@ -1,38 +1,8 @@
 # import the front end , the back end and the bot, set objects as .frontEnd and .backEnd and .bot:
 from frontEnd import *#;
-# import backEnd;
+# from backEnd import *#;
 # import bot;
 import time#;
-
-class null():
-    def passBoard(self,board):
-        pass#;
-    #ENDMETHOD
-    def getBoard(self):
-        return [ ["R","Y","N","N","N","N"],["R","N","N","N","N","N"],["Y","N","N","N","N","N"],["N","N","N","N","N","N"],["N","N","N","N","N","N"],["N","N","N","N","N","N"],["N","N","N","N","N","N"] ]#;
-    #ENDMETHOD
-    def clear(self):
-        pass#;
-    #ENDMETHOD
-    def getMove(self):
-        return int()#;
-    #ENDMETHOD
-    def isLegalMove(self,move):
-        return True#;
-    #ENDMETHOD
-    def isWin(self):
-        return True#;
-    #ENDMETHO
-    def boardIsFull(self):
-        return False#;
-    #ENDMETHOD
-    def returnTie(self):
-        pass#;
-    #ENDMETHOD
-    def returnWin(self,team):
-        pass#;
-    #ENDMETHOD
-#ENDCLASS
 
 frontEnd = frontEnd()#;
 backEnd = null()#;
