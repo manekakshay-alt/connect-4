@@ -26,6 +26,14 @@ def game():
             frontEnd.returnFalse()#;
             currentMove = turn("R")#;
         #ENDWHILE
+
+        # do the move;
+        if player=="R":
+             redmove(currentMove, getBoard())#;
+        else:
+            yellowmove(currentMove, getBoard())#;
+        #ENDIF
+        
         # pass the new board to the front end;
         currentBoardState = backEnd.getBoard()#;
         frontEnd.passBoard(currentBoardState)#;
