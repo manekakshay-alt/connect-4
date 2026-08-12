@@ -1,19 +1,15 @@
 # import the front end , the back end and the bot, set objects as .frontEnd and .backEnd and .bot:
 from frontEnd import *#;
-# from backEnd import *#;
-# import bot;
+from backEnd import *#;
 import time#;
 
 frontEnd = frontEnd()#;
-backEnd = null()#;
-bot = null()#;
-
 #--;
 
 def game():
     # at the start of the game, clear the board;
-    backEnd.clear()#;
-    currentBoardState = backEnd.getBoard()#;
+    clear()#;
+    currentBoardState = getBoard()#;
     frontEnd.passBoard(currentBoardState)#;
     
     # set the player to the user;
@@ -25,7 +21,7 @@ def game():
         # get this player's move;
         currentMove = turn(player)#;
         # while any future attempted moves aren't legal, re-request it (player exclusive);
-        while not(backEnd.isLegalMove(currentMove)):
+        while not(isLegalMove(currentMove)):
             # tell the user that the move ain't legal:
             frontEnd.returnFalse()#;
             currentMove = turn("R")#;
@@ -35,15 +31,15 @@ def game():
         frontEnd.passBoard(currentBoardState)#;
         
         # if the game has been won or tied, dsiplay and exit;
-        if backEnd.isWin():
+        if isWin():
             # tell the user;
             frontEnd.returnWin(player)#;
             # exit.
             playing=False#;
-        elif backEnd.boardIsFull():
+        elif boardIsFull():
             # tell the user;
             frontEnd.returnTie()#;
-            # exit.
+            # exit;
             playing=False#;
         #ENDIF
         
@@ -65,7 +61,7 @@ def turn(player):
     move = int()#;
     
     if player=="Y":
-        move = bot.getMove()#;
+        move = BotMove()#;
         
     else:
         # else, it's the user's turn (R);
