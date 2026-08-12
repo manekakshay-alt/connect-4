@@ -100,9 +100,9 @@ def BotMove():
 
 def clear():
     newboard = Board#;
-  for column in newboard:
-    for row in column:
-      newboard = "N"
+    for column in newboard:
+        for row in column:
+            newboard = "N"
   # set inner Board to newboard;
   Board = newBoard#;
 
