@@ -98,11 +98,13 @@ def BotMove():
   column4inaRow(Board)
 
 
-def clear(board):
-  for columns in board:
-    for row in columns:
-      board[columns][row] = "N"
-  return board
+def clear():
+    newboard = Board#;
+  for column in newboard:
+    for row in column:
+      newboard = "N"
+  # set inner Board to newboard;
+  Board = newBoard#;
 
 
 if __name__ == "__main__":
