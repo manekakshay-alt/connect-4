@@ -84,8 +84,35 @@ def column4inaRow(board):
 
 
 def row4inaRow(board):
-  for i in range(7):
-    print("ye")
+  for i in range(6):
+    red=0
+    yellow=0
+    winner=0
+    for columns in board:
+      if columns[i]=="r":
+        red=red+1
+        yellow=0
+      elif columns[i]=="y":
+        yellow=yellow+1
+        red=0
+      else:
+        yellow=0
+        red=0
+      if red==4:
+        winner="RED"
+        return winner
+      elif yellow==4:
+        winner="YELLOW"
+        return winner
+      
+def win():
+  victory=0
+  if row4inaRow(Board)=="RED" or if column4inaRow(Board)=="RED":
+    victory=="RED"
+    return victory
+  elif row4inaRow(Board)=="YELLOW" or if column4inaRow(Board)=="YELLOW":
+  victory=="YELLOW"
+  return victory
 
 
 def BotMove():
