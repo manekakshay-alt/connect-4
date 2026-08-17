@@ -7,7 +7,7 @@ frontEnd = frontEnd()#;
 
 def game():
     # at the start of the game, clear the board;
-    clear()#;
+    clear(getBoard())#;
     currentBoardState = getBoard()#;
     frontEnd.passBoard(currentBoardState)#;
     
