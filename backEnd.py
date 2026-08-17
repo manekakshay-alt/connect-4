@@ -8,7 +8,16 @@ Board=[["N","N","N","N","N","N"],
        ["N","N","N","N","N","N"]]
 
 
-
+def getBoard():
+       boardState = []#;
+       # for each column in Board, add the reverse to boardState;
+       for column in Board:
+              boardState.append(column.reversed())#;
+       #ENDFOR
+       # return;
+       return boardState#;
+#ENDMETHOD
+       
 def isTie(board):
   NopTie=False
   for row in board:
@@ -28,7 +37,7 @@ def movePossible(move,board):
   else:
     return True
 
-def redmove(column,board):
+def redMove(column,board):
   for i in range(5, -1, -1):
     if movePossible(column,board)==True:
       if board[column][i]=="M":
@@ -36,7 +45,7 @@ def redmove(column,board):
         return board 
         break
         
-def yellowmove(column,board):
+def yellowMove(column,board):
   for i in range(5, -1, -1):
     if movePossible(column,board)==True:
       if board[column][i]=="N":
