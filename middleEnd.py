@@ -54,6 +54,8 @@ def game():
         player = togglePlayer(player)#;
         # loop;
     #ENDWHILE
+    # stall until the user presses enter;
+    input("press enter to end")#;
 #ENDMETHOD
 
 def togglePlayer(player):
