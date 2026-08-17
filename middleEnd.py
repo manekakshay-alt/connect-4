@@ -20,7 +20,7 @@ def game():
         # get this player's move;
         currentMove = turn(player)#;
         # while any future attempted moves aren't legal, re-request it (player exclusive);
-        while not(MovePossible(currentMove,getBoard())):
+        while not(movePossible(currentMove,getBoard())):
             # tell the user that the move ain't legal:
             frontEnd.returnFalse()#;
             currentMove = turn("R")#;
@@ -28,17 +28,17 @@ def game():
 
         # do the move;
         if player=="R":
-             redMove(currentMove, getBoard())#;
+            redMove(currentMove, getBoard())#;
         else:
             yellowMove(currentMove, getBoard())#;
         #ENDIF
         
         # pass the new board to the front end;
-        currentBoardState = backEnd.getBoard()#;
+        currentBoardState = getBoard()#;
         frontEnd.passBoard(currentBoardState)#;
         
         # if the game has been won or tied, dsiplay and exit;
-        if isWin():
+        if win():
             # tell the user;
             frontEnd.returnWin(player)#;
             # exit.
