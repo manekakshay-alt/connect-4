@@ -1,7 +1,6 @@
 # import the front end , the back end and the bot, set objects as .frontEnd and .backEnd and .bot:
 from frontEnd import *#;
 from backEnd import *#;
-import time#;
 
 frontEnd = frontEnd()#;
 #--;
@@ -29,9 +28,9 @@ def game():
 
         # do the move;
         if player=="R":
-             redmove(currentMove, getBoard())#;
+             redMove(currentMove, getBoard())#;
         else:
-            yellowmove(currentMove, getBoard())#;
+            yellowMove(currentMove, getBoard())#;
         #ENDIF
         
         # pass the new board to the front end;
