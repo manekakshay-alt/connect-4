@@ -1,87 +1,71 @@
-
 from random import randint
+Board=[["n","n","n","n","n","n"],
+       ["n","n","n","n","n","n"],
+       ["n","n","n","n","n","n"],
+       ["n","n","n","n","n","n"],
+       ["n","n","n","n","n","n"],
+       ["n","n","n","n","n","n"],
+       ["n","n","n","n","n","n"]]
 
-Board = [
-    ["N", "N", "N", "N", "N", "N"],
-    ["N", "N", "N", "N", "N", "N"],
-    ["N", "N", "N", "N", "N", "N"],
-    ["N", "N", "N", "N", "N", "N"],
-    ["N", "N", "N", "N", "N", "N"],
-    ["N", "N", "N", "N", "N", "N"],
-    ["N", "N", "N", "N", "N", "N"],
-]
 
-def getBoard():
-    # create a temporary board;
-    temp = []#;
-    # for each column in the current board;
-    for column in Board:
-        temp.append(column.reverse())#;
-    #ENDFOR
-
-    return temp#;
-#ENDMETHOD
 
 def isTie(board):
-  NopTie = False
+  NopTie=0
   for row in board:
     for i in row:
-      if i == "N":
-        NopTie = True
+      if i=="n":
+        NopTie=1
   return NopTie
 
 
-def movePossible(move, board):
-  check = 0
+
+def movePossible(move,board):
+  check=0
   for i in board[move]:
-    if i == "R" or i == "Y":
-      check = check + 1
-  if check >= 6:
+    if i=="r" or i=="y":
+      check=check+1
+  if check>=6:
     return False
   else:
     return True
 
-
-def redmove(column, board):
+def redmove(column,board):
   for i in range(5, -1, -1):
-    if movePossible(column, board) == True:
-      if board[column][i] == "N":
-        board[column][i] = "R"
-        return board
+    if movePossible(column,board)==True:
+      if board[column][i]=="n":
+        board[column][i]="r"
+        return board 
         break
-
-
-def yellowmove(column, board):
+        
+def yellowmove(column,board):
   for i in range(5, -1, -1):
-    if movePossible(column, board) == True:
-      if board[column][i] == "N":
-        board[column][i] = "Y"
-        return board
+    if movePossible(column,board)==True:
+      if board[column][i]=="n":
+        board[column][i]="y"
+        return board 
         break
-
 
 def column4inaRow(board):
   for column in board:
-    red = 0
-    yellow = 0
-    winner = 0
+    red=0
+    yellow=0
+    winner=0
     for i in column:
-      if i == "R":
-        red = red + 1
-        yellow = 0
-      elif i == "Y":
-        yellow = yellow + 1
-        red = 0
-      else:
-        red = 0
-        yellow = 0
-      if red == 4:
-        winner = "RED"
-        return winner
-      elif yellow == 4:
-        winner = "YELLOW"
-        return winner
-
+       if i=="r":
+         red=red+1
+         yellow=0
+       elif i=="y":
+         yellow=yellow+1
+         red=0
+       else:
+         red=0
+         yellow=0
+       if red==4:
+         winner="RED"
+         return winner
+       elif yellow==4:
+         winner="YELLOW"
+         return winner
 
 def row4inaRow(board):
   for i in range(6):
@@ -104,39 +88,47 @@ def row4inaRow(board):
       elif yellow==4:
         winner="YELLOW"
         return winner
+        
+def diagonal4inaRow(board):
+  for c in range(4):
+    for r in range(3):
+      if board[c][r] == "r" and board[c+1][r+1] == "r" and board[c+2][r+2] == "r" and board[c+3][r+3] == "r":
+        return "RED"
+      elif board[c][r] == "y" and board[c+1][r+1] == "y" and board[c+2][r+2] == "y" and board[c+3][r+3] == "y":
+        return "YELLOW"
+
+  for c in range(4):
+    for r in range(3, 6):
+      if board[c][r] == "r" and board[c+1][r-1] == "r" and board[c+2][r-2] == "r" and board[c+3][r-3] == "r":
+        return "RED"
+      elif board[c][r] == "y" and board[c+1][r-1] == "y" and board[c+2][r-2] == "y" and board[c+3][r-3] == "y":
+        return "YELLOW"
+
+  return 0
+
       
 def win():
   victory=0
-  if row4inaRow(Board)=="RED" or if column4inaRow(Board)=="RED":
-    victory=="RED"
+  if row4inaRow(Board)=="RED" or  column4inaRow(Board)=="RED" or diagonal4inaRow(Board)=="RED":
+    victory="RED"
     return victory
-  elif row4inaRow(Board)=="YELLOW" or if column4inaRow(Board)=="YELLOW":
-  victory=="YELLOW"
-  return victory
-
+  elif row4inaRow(Board)=="YELLOW" or  column4inaRow(Board)=="YELLOW" or diagonal4inaRow=="YELLOW":
+    victory="YELLOW"
+    return victory
+  else:
+    return victory 
 
 def BotMove():
-  legality = False
-  while legality != True:
-    choice = randint(0, 6)
-    if movePossible(choice, Board) == True:
-      legality = True
-  yellowmove(choice, Board)
+  legality=False
+  while legality!=True:
+    choice=randint(0,6)
+    if movePossible(choice,Board)==True:
+      legality=True
+  yellowmove(choice,Board)
   column4inaRow(Board)
-
-
-def clear():
-    newboard = Board#;
-    for column in newboard:
-        for row in column:
-            newboard = "N"
-  # set inner Board to newboard;
-  Board = newBoard#;
-
-
-if __name__ == "__main__":
-    for i in range(4):
-        redmove(3, Board)
-        BotMove()
-        print(Board)
-        print(column4inaRow(Board))
+  
+def clear(board):
+  for c in range(len(board)):
+    for r in range (len(board[c])):
+      board[c][r]="n"
+  return board
