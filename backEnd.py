@@ -12,7 +12,7 @@ def getBoard():
        boardState = []#;
        # for each column in Board, add the reverse to boardState;
        for column in Board:
-              boardState.append(column.reversed())#;
+              boardState.append(column.reverse())#;
        #ENDFOR
        # return;
        return boardState#;
