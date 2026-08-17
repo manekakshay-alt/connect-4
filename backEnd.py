@@ -33,6 +33,8 @@ def isTie(board):
 
 def movePossible(move,board):
   check=0
+  # convert move to index format;
+  move = move-1#;
   for i in board[move]:
     if i=="R" or i=="Y":
       check=check+1
@@ -42,20 +44,22 @@ def movePossible(move,board):
     return True
 
 def redMove(column,board):
+  # convert move to index format;
+  column = column-1#;
   for i in range(5, -1, -1):
-    if movePossible(column,board)==True:
-      if board[column][i]=="M":
-        board[column][i]="R"
-        return board 
-        break
+         if board[column][i]=="N":
+                board[column][i]="R"
+                return board
+  return board 
         
 def yellowMove(column,board):
+  # convert move to index format;
+  column = column-1#;
   for i in range(5, -1, -1):
-    if movePossible(column,board)==True:
-      if board[column][i]=="N":
-        board[column][i]="Y"
-        return board 
-        break
+         if board[column][i]=="N":
+                board[column][i]="Y"
+                return board
+  return board 
 
 def column4inaRow(board):
   for column in board:
@@ -130,11 +134,10 @@ def win():
 def BotMove():
   legality=False
   while legality!=True:
-    choice=randint(0,6)
+    choice=randint(1,7)
     if movePossible(choice,Board)==True:
       legality=True
-  yellowmove(choice,Board)
-  column4inaRow(Board)
+  return choice#;
   
 def clear(board):
   for c in range(len(board)):
