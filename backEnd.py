@@ -9,10 +9,14 @@ Board=[["N","N","N","N","N","N"],
 
 
 def getBoard():
+       dataStore = Board#;
        boardState = []#;
        # for each column in Board, add the reverse to boardState;
-       for column in Board:
-              boardState.append(column.reverse())#;
+       for column in dataStore:
+              # reverse the column;
+              column.reverse()
+              # add the revesed list;
+              boardState.append(column)#;
        #ENDFOR
        # return;
        return boardState#;
