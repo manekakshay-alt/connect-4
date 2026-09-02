@@ -2,6 +2,9 @@
 from frontEnd import *#;
 from backEnd import *#;
 
+# import sys for program exit;
+import sys#;
+
 frontEnd = frontEnd()#;
 #--;
 
@@ -85,3 +88,4 @@ def turn(player):
 
 # prog.
 game()#;
+sys.exit()#;
