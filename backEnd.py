@@ -134,15 +134,21 @@ def win():
     return False 
 
 def BotMove():
-       
-       legality=False
-       while legality!=True:
-              choice=randint(1,7)
-              if movePossible(choice,Board)==True:
-                     legality=True
-              #ENDIF
-       #ENDWHILE
-       return choice#;
+       # get the botMove;
+       move:int#;
+       strength:float#;
+       move,strength=botMove(getBoard(),4,"Y");
+       # if the move isn't legal or the strength is 0;
+       if movePossible(choice,Board)==False or strength=0.0:
+              legality=False
+              while legality!=True:
+                     move=randint(1,7)
+                     if movePossible(move,Board)==True:
+                            legality=True
+                     #ENDIF
+              #ENDWHILE
+       #ENDIF
+       return move#;
 #ENDMETHOD
   
 def clear(board):
