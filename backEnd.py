@@ -1,5 +1,6 @@
 from random import randint
 from botFunctions1.py import all#;
+from botFuncitons2.py import all#;
 Board=[["N","N","N","N","N","N"],
        ["N","N","N","N","N","N"],
        ["N","N","N","N","N","N"],
@@ -133,12 +134,16 @@ def win():
     return False 
 
 def BotMove():
-  legality=False
-  while legality!=True:
-    choice=randint(1,7)
-    if movePossible(choice,Board)==True:
-      legality=True
-  return choice#;
+       
+       legality=False
+       while legality!=True:
+              choice=randint(1,7)
+              if movePossible(choice,Board)==True:
+                     legality=True
+              #ENDIF
+       #ENDWHILE
+       return choice#;
+#ENDMETHOD
   
 def clear(board):
   for c in range(len(board)):
