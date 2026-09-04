@@ -32,10 +32,10 @@ def botMove(board:list, depth:int, turn:str)->(int,float):
         inject="R"#;
     #ENDIF
     # for each move, recur, sending back up the best one;
-    bestMove:int#;
+    bestMove:int = 0#;
     bestEvaluation:float = 0.0#;
     currentMove:int = 0#;
-    currentEvaluation:float#;
+    currentEvaluation:float = 0.0#;
     for move in moves:
         # make a local copy of the board;
         currentBoard=copy.deepcopy(board)#;
@@ -224,7 +224,7 @@ def getRowThreats(board:list,team:str)->list:
                 #ENDFOR
             elif currentPiece==antiTeam:
                 # else, if the piece is of the opposing team's, clear all threat instances;
-                threats = []#;
+                threats:list = []#;
             else:
                 # else, just increment threatContinue for each threat;
                 # also create a new threat that points West;
@@ -238,7 +238,7 @@ def getRowThreats(board:list,team:str)->list:
 
             # for each threat, if threatContinue is =4, document it then remove all threats;
             threatPositions:list = []#;
-            direction:str#;
+            direction:str = "#"#;
             for threatCount in range(len(threatInstances)):
                 threat = threatInstances[threatCount]#;
                 if threat.threatContinue==4:
@@ -337,7 +337,7 @@ def getDiagonalThreats(board:list,team:str)->list:
 
             # for each threat, if threatContinue is =4, document it then remove all threats;
             threatPositions:list = []#;
-            direction:str#;
+            direction:str = "#"#;
             for threatCount in range(len(threatInstances)):
                 threat = threatInstances[threatCount]#;
                 if threat.threatContinue==4:
@@ -433,7 +433,7 @@ def EvalBuild(board:list,turn:str)->list:
 
     blocked:bool=True#;
     originalThreatLength:int = len(threatsBot)#;
-    strength:int#;
+    strength:float = 0.0#;
     bestMove:list = [1,0.0]#;
     # for each move;
     for move in range(1,7):
@@ -464,7 +464,7 @@ def EvalBuild(board:list,turn:str)->list:
         # if this move forseeably builds to a diagonal threat, strength+=0.1;
         # get moveColumn, moveRow;
         moveColumn:int = move-1#;
-        moveRow:int#;
+        moveRow:int = 0#;
         for row in range(6):
             # if it's blank, just go to the next;
             if currentBoard[move-1][row]=="N" and row!=5:
@@ -607,8 +607,8 @@ def EvalTie(board:list,turn:str)->list:
     for threat in playerThreats:
         if threat[4]==2:
             # retrieve each possible slot for this threat to be countered;
-            increment:int#;
-            vertical:bool#;
+            increment:int = 0#;
+            vertical:bool = False#;
             if threat[3]=="N" or threat[3]=="E":
                 increment=1#;
             else:
