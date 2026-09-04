@@ -25,11 +25,11 @@ def getBoard():
 #ENDMETHOD
        
 def isTie(board):
-  NopTie=False
+  NopTie=True#;
   for row in board:
     for i in row:
       if i=="N":
-        NopTie=True
+        NopTie=False#;
   return NopTie
 
 
