@@ -1,6 +1,6 @@
 from random import randint
-from botFunctions1.py import all#;
-from botFuncitons2.py import all#;
+from botFunctions1.py import *#;
+from botFuncitons2.py import *#;
 Board=[["N","N","N","N","N","N"],
        ["N","N","N","N","N","N"],
        ["N","N","N","N","N","N"],
