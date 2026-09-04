@@ -14,7 +14,7 @@ def botMove(board:list, depth:int, turn:str)->(int,float):
     depth = depth-1#;
     
     # get the 3 moves from the WhatTimeIsItBot;
-    moves:list#;
+    moves:list = []#;
     moves = whatTimeIsIt(board,turn)#;
 
     # if any of the moves are 1.0, instant return;
@@ -91,7 +91,7 @@ def whatTimeIsIt(board:list,turn:str)->list:
     #ENDIF
     
     # create a list with all evaluations and then apply each bonus;
-    evaluations:list#;
+    evaluations:list = []#;
     # end;
     evaluations.append(EvalTie(board,turn))#;
     evaluations[0][1]=evaluations[0][1]+endBonus#;
@@ -134,7 +134,7 @@ def getThreats(board:list,team:str)->list:
 #ENDMETHOD
 
 def getColumnThreats(board:list,team:str)->list:
-    threats:list#; // return value;
+    threats:list = []#; // return value;
 
     # initialise variables;
     antiTeam = "N"#;
@@ -195,8 +195,8 @@ class threatInstance():
 #ENDCLASS
 
 def getRowThreats(board:list,team:str)->list:
-    threats:list#; // return value;
-    threatInstances:list#;
+    threats:list = []#; // return value;
+    threatInstances:list = []#;
 
     # initialise variables;
     antiTeam = "N"#;
@@ -237,7 +237,7 @@ def getRowThreats(board:list,team:str)->list:
             #ENDIF
 
             # for each threat, if threatContinue is =4, document it then remove all threats;
-            threatPositions:list#;
+            threatPositions:list = []#;
             direction:str#;
             for threatCount in range(len(threatInstances)):
                 threat = threatInstances[threatCount]#;
@@ -270,7 +270,7 @@ def getDiagonalThreats(board:list,team:str)->list:
     # establish where the diagonals are and what are in them;
     # note: only the diagonals that matter are accounted for;
     
-    diagonals:list#;
+    diagonals:list = []#;
     # column diagonals;
     for column in range(4):
         # for each piece in the square in which the diagonal is bound, produce a new diagonal;
@@ -294,8 +294,8 @@ def getDiagonalThreats(board:list,team:str)->list:
     #ENDFOR
 
     # for each diagonal do as below;
-    threats:list#;
-    threatInstances:list#;
+    threats:list = []#;
+    threatInstances:list = []#;
 
     # initialise detection variables;
     antiTeam = "N"#;
@@ -336,7 +336,7 @@ def getDiagonalThreats(board:list,team:str)->list:
             #ENDIF
 
             # for each threat, if threatContinue is =4, document it then remove all threats;
-            threatPositions:list#;
+            threatPositions:list = []#;
             direction:str#;
             for threatCount in range(len(threatInstances)):
                 threat = threatInstances[threatCount]#;
@@ -369,7 +369,7 @@ def getThreatSlots(board:list,increment:int,originColumn:int,originRow:int,diago
     # get the team being pointed at;
     team:str = board[originColumn][originRow]#;
 
-    threatSlots:list#; // return list;
+    threatSlots:list = []#; // return list;
 
     # continue for 4:
     for i in range(4):
@@ -412,8 +412,8 @@ def EvalBuild(board:list,turn:str)->list:
     #---
 
     # get all 2/3 threats;
-    threatsBot:list#;
-    threatsPlayer:list#;
+    threatsBot:list = []#;
+    threatsPlayer:list = []#;
     if turn=="Y":
         threatsBot = getThreats(board,"Y")#;
         threatsPlayer = getThreats(board,"R")#;
@@ -553,7 +553,7 @@ def EvalTie(board:list,turn:str)->list:
     #---;
 
     # get all opponent threats;
-    playerThreats:list#;
+    playerThreats:list = []#;
     if turn=="Y":
         playerThreats=getThreats(board,"R")#;
     else:
@@ -603,7 +603,7 @@ def EvalTie(board:list,turn:str)->list:
     #ENDFOR
 
     # for 2-threats;
-    bestSlots:list#;
+    bestSlots:list = []#;
     for threat in playerThreats:
         if threat[4]==2:
             # retrieve each possible slot for this threat to be countered;
