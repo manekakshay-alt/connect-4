@@ -139,7 +139,7 @@ def BotMove():
        strength:float#;
        move,strength=botMove(getBoard(),4,"Y");
        # if the move isn't legal or the strength is 0;
-       if movePossible(choice,Board)==False or strength=0.0:
+       if movePossible(choice,Board)==False or strength==0.0:
               legality=False
               while legality!=True:
                      move=randint(1,7)
