@@ -96,17 +96,18 @@ def whatTimeIsIt(board:list,turn:str)->list:
     evaluations.append(EvalTie(board,turn))#;
     evaluations[0][1]=evaluations[0][1]+endBonus#;
     # early;
-    evaluations.append(EvalThreat(board))#;
-    evaluations[1][1]=evaluations[1][1]+startBonus#;
+    #evaluations.append(EvalThreat(board))#;
+    #evaluations[1][1]=evaluations[1][1]+startBonus#;
     # middle;
+    # note: update to [2];
     evaluations.append(EvalBuild(board,turn))#;
-    evaluations[2][1]=evaluations[2][1]+middleBonus#;
+    evaluations[1][1]=evaluations[1][1]+middleBonus#;
     # middle;
-    evaluations.append(EvalStrat(board))#;
-    evaluations[3][1]=evaluations[3][1]+middleBonus#;
+    #evaluations.append(EvalStrat(board))#;
+    #evaluations[3][1]=evaluations[3][1]+middleBonus#;
     # end;
-    evaluations.append(EvalWin(board))#;
-    evaluations[4][1]=evaluations[4][1]+endBonus#;
+    #evaluations.append(EvalWin(board))#;
+    #evaluations[4][1]=evaluations[4][1]+endBonus#;
 
     # define;
     top3:list = [[1,0.0],[1,0.0],[1,0.0]]##;
