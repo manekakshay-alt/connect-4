@@ -19,7 +19,7 @@ def botMove(board:list, depth:int, turn:str)->(int,float):
 
     # if any of the moves are 1.0, instant return;
     for move in moves:
-        if move[1]==1.0:
+        if move[1]>=1.0:
             return move[1],flag#;
         #ENDIF
     #ENDFOR
