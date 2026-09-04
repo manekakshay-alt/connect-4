@@ -1,4 +1,5 @@
 from random import randint
+from botFunctions1.py import all#;
 Board=[["N","N","N","N","N","N"],
        ["N","N","N","N","N","N"],
        ["N","N","N","N","N","N"],
