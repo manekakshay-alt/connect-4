@@ -1,6 +1,8 @@
 from random import randint
 from botFunctions1 import *#;
 from botFunctions2 import *#;
+import copy#; // for local board pass saving;
+from moves import yellowMove,redMove#;
 Board=[["N","N","N","N","N","N"],
        ["N","N","N","N","N","N"],
        ["N","N","N","N","N","N"],
@@ -11,7 +13,19 @@ Board=[["N","N","N","N","N","N"],
 
 
 def getBoard():
-       dataStore = Board#;
+       global Board#;
+       # return the Board;
+       return Board#;
+#ENDMETHOD
+
+def setBoard(setBoardBoard:list):
+       global Board#;
+       # set board to this board;
+       Board=setBoardBoard#;
+#ENDMETHOD
+
+def flipBoard(boardToFlip:list):
+       dataStore = copy.deepcopy(boardToFlip)#;
        boardState = []#;
        # for each column in Board, add the reverse to boardState;
        for column in dataStore:
@@ -44,24 +58,6 @@ def movePossible(move,board):
     return False
   else:
     return True
-
-def redMove(column,board):
-  # convert move to index format;
-  column = column-1#;
-  for i in range(5, -1, -1):
-         if board[column][i]=="N":
-                board[column][i]="R"
-                return board
-  return board 
-        
-def yellowMove(column,board):
-  # convert move to index format;
-  column = column-1#;
-  for i in range(5, -1, -1):
-         if board[column][i]=="N":
-                board[column][i]="Y"
-                return board
-  return board 
 
 def column4inaRow(board):
   for column in board:
@@ -134,12 +130,13 @@ def win():
     return False 
 
 def BotMove():
+       global Board#;
        # get the botMove;
        move:int#;
        strength:float#;
        move,strength=botMove(getBoard(),4,"Y");
        # if the move isn't legal or the strength is 0;
-       if movePossible(choice,Board)==False or strength==0.0:
+       if movePossible(move,Board)==False or strength==0.0:
               legality=False
               while legality!=True:
                      move=randint(1,7)
