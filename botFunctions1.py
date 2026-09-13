@@ -1,5 +1,7 @@
 #program imports;
 import copy#;
+# import player and bot moves from the back end;
+from moves import yellowMove,redMove#;
 
 def botMove(board:list, depth:int, turn:str)->(int,float):
     # flag for 'checkmate';
@@ -94,6 +96,7 @@ def whatTimeIsIt(board:list,turn:str)->list:
     evaluations:list = []#;
     # end;
     evaluations.append(EvalTie(board,turn))#;
+    print(evaluations)#;
     evaluations[0][1]=evaluations[0][1]+endBonus#;
     # early;
     #evaluations.append(EvalThreat(board))#;
@@ -130,7 +133,11 @@ def whatTimeIsIt(board:list,turn:str)->list:
 def getThreats(board:list,team:str)->list:
     # return concatenated lists for column, row and diagonal threats;
     # format: [[col[base:1]:int, row:int[base:1], diagonal:t/f, direction:"N/S,E/W", lengthOFThreat:int],ect.,ect.,ect.];
-    return getColumnThreats(board,team)+getRowThreats(board,team)+getDiagonalThreats(board,team)#;
+    returnThreats = []#; // return list;
+    returnThreats.extend(getColumnThreats(board,team))#;
+    returnThreats.extend(getRowThreats(board,team))#;
+    returnThreats.extend(getDiagonalThreats(board,team))#;
+    return returnThreats#;
 #ENDMETHOD
 
 def getColumnThreats(board:list,team:str)->list:
@@ -145,11 +152,13 @@ def getColumnThreats(board:list,team:str)->list:
         antiTeam="R"#;
     #ENDIF
     threatCounter:int = 0#;
-    theatContinue:int = 0#;
+    threatContinue:int = 0#;
     continueThreat:bool = False#;
     
     # for each piece;
+    columnCount:int=0#;
     for column in board:
+        rowCount:int=0#;
         for currentPiece in column:
             # if the piece is this player's;
             if currentPiece==team:
@@ -175,10 +184,12 @@ def getColumnThreats(board:list,team:str)->list:
                 continueThreat=False#;
 
                 # document;
-                threats.append([column+1,currentPiece-3,False,"N",threatCounter])#;
+                threats.append([columnCount+1,rowCount-3,False,"N",threatCounter])#;
                 threatCounter=0#;
             #ENDIF
+            rowCount=rowCount+1#; // increment rowCount;
         #ENDFOR
+        columnCount=columnCount+1#; // increment columnCount;
     #ENDFOR
                 
     return threats#;
@@ -248,7 +259,8 @@ def getRowThreats(board:list,team:str)->list:
                     else:
                         direction="W"#;
                     #ENDIF
-                    threats.append([threat.Column,threat.Row,False,direction,threat.threatCounter])#;
+                    threatHold:list=[threat.originColumn,threat.originRow,False,direction,threat.threatCounter]#;
+                    threats.append(threatHold)#;
                     threatPositions.append(threatCount)#;
                 #ENDIF
             #ENDFOR
@@ -289,7 +301,8 @@ def getDiagonalThreats(board:list,team:str)->list:
         # for each other diagonal, form the square in which it is bound, adding all pieces to that new diagonal;
         diagonals.append([])#;
         for diagonalPosition in range(6-row):
-            diagonals[row+4].append((board[diagonalPosition][diagonalPosition+row],(diagonalPosition,diagonalPosition+row)))#;
+            #// +3 due to the creation of the others above, and the skipping of row==0 creating one;
+            diagonals[row+3].append((board[diagonalPosition][diagonalPosition+row],(diagonalPosition,diagonalPosition+row)))#;
         #ENDFOR
     #ENDFOR
 
@@ -347,7 +360,8 @@ def getDiagonalThreats(board:list,team:str)->list:
                     else:
                         direction="W"#;
                     #ENDIF
-                    threats.append([threat.Column,threat.Row,True,direction,threat.threatCounter])#;
+                    threatHold:list=[threat.originColumn,threat.originRow,True,direction,threat.threatCounter]#;
+                    threats.append(threatHold)#;
                     threatPositions.append(threatCount)#;
                 #ENDIF
             #ENDFOR
@@ -367,12 +381,20 @@ def getDiagonalThreats(board:list,team:str)->list:
 
 def getThreatSlots(board:list,increment:int,originColumn:int,originRow:int,diagonal:bool,vertical:bool)->list:
     # get the team being pointed at;
+    # catch erroneous data;
+    if originColumn>6 or originColumn<0 or originRow>5 or originRow<0:
+        return []#;
+    #ENDIF
     team:str = board[originColumn][originRow]#;
 
     threatSlots:list = []#; // return list;
 
     # continue for 4:
     for i in range(4):
+        # if the index is out of range, skip the error;
+        if originColumn>6 or originRow>5 or originColumn<0 or originRow<0:
+            continue#;
+        #ENDIF
         # if this piece isn't on the original team, add it to the return list;
         if board[originColumn][originRow]!=team:
             # add the column of this threat slot;
@@ -448,7 +470,7 @@ def EvalBuild(board:list,turn:str)->list:
             redMove(move,currentBoard)#;
         #ENDIF
         # if this blocks a threat, continue;
-        newThreats:list = getThreats(currentBoard,team)#;
+        newThreats:list = getThreats(currentBoard,turn)#;
         if len(newThreats)<originalThreatLength:
             continue#;
         else:
@@ -582,7 +604,12 @@ def EvalTie(board:list,turn:str)->list:
                     #ENDIF
 
                     # find the first blocking move and return;
-                    return getThreatSlots(board,direction,threat[0]-1,threat[1]-1,False,False)[0]#;
+                    # catch if need the first responce or any;
+                    if len(getThreatSlots(board,direction,threat[0]-1,threat[1]-1,False,False))>1:
+                        return [getThreatSlots(board,direction,threat[0]-1,threat[1]-1,False,False)[0],1.0]#;
+                    else:
+                        return [getThreatSlots(board,direction,threat[0]-1,threat[1]-1,False,False),1.0]#;
+                    #ENDIF
                 #ENDIF
             else:
                 # diagonal, define increment;
@@ -595,7 +622,12 @@ def EvalTie(board:list,turn:str)->list:
                 #ENDIF
 
                 # find the first blocking move and return;
-                return getThreatSlots(board,direction,threat[0]-1,threat[1]-1,True,False)[0]#;
+                # catch if the first responce is needed or any;
+                if len(getThreatSlots(board,direction,threat[0]-1,threat[1]-1,True,False))>1:
+                    return [getThreatSlots(board,direction,threat[0]-1,threat[1]-1,True,False)[0],1.0]#;
+                else:
+                    return [getThreatSlots(board,direction,threat[0]-1,threat[1]-1,True,False),1.0]#;
+                #ENDIF
             #ENDIF
                 
         # else, threats are of length 2 or non existent;
@@ -628,7 +660,7 @@ def EvalTie(board:list,turn:str)->list:
             bestSlot:int=0#;
             for threatSlot in threatSlots:
                 # if this is the closest slot to the centre, then set it to be the choice;
-                if abs(3-threatSlot)<=minmum:
+                if abs(3-threatSlot)<=minimum:
                     bestSlot=threatSlot#;
                     minimum=3-threatSlot#;
                 #ENDIF
@@ -645,7 +677,7 @@ def EvalTie(board:list,turn:str)->list:
 
     # return the modal bestSlot with strength 0.75, if it's tied the last is passed;
     counts:list = [0,0,0,0,0,0,0]#;
-    if len(bestSlots>0):
+    if len(bestSlots)>0:
         # for each slot, count the number of bestSlots that appear there;
         for slot in bestSlots:
             counts[slot] = counts[slot]+1#;
@@ -654,7 +686,7 @@ def EvalTie(board:list,turn:str)->list:
         # get the greatest slot;
         greatest:int=0#;
         greatestPosition:int=0#;
-        for element in len(counts):
+        for element in range(len(counts)):
             if counts[element]>=greatest:
                 greatest=counts[element]#;
                 greatestPosition=element#;
