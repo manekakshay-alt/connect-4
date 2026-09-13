@@ -31,10 +31,11 @@ def game():
 
         # do the move;
         if player=="R":
-            redMove(currentMove, getBoard())#;
+            setBoard(redMove(currentMove, getBoard()))#;
         else:
-            yellowMove(currentMove, getBoard())#;
+            setBoard(yellowMove(currentMove, getBoard()))#;
         #ENDIF
+        
         
         # pass the new board to the front end;
         currentBoardState = getBoard()#;
