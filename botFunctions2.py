@@ -1,74 +1,99 @@
-def TwoInACoulmn(board):
-  count=-1
-  for column in board:
-    yellow=0
-    count=count+1
-    for i in column:
-      if i=="y":
-        yellow=yellow+1
-      elif i=="n" and yellow==2:
-        return count
-      else:
-        yellow=0
-  return False 
+def _landing_row(board, column_index):
+    for row_index, cell in enumerate(board[column_index]):
+        if cell == "N":
+            return row_index
+    return None
+
+def _line_length(board, column, row, dc, dr):
+    total = 1
+
+    for direction in (-1, 1):
+        c = column + dc * direction
+        r = row + dr * direction
+
+        while (
+            0 <= c < len(board)
+            and 0 <= r < len(board[c])
+            and board[c][r] == "Y"
+        ):
+            total += 1
+            c += dc * direction
+            r += dr * direction
+
+    return total
+
+
+def _find_building_move(board, line_type, target_length):
+    for column_index in range(len(board)):
+        row_index = _landing_row(board, column_index)
+
+        # Skip full columns.
+        if row_index is None:
+            continue
+
+        # Test the move .
+        board[column_index][row_index] = "Y"
+
+        if line_type == "column":
+            length = _line_length(
+                board, column_index, row_index, 0, 1
+            )
+        else:
+            length = _line_length(
+                board, column_index, row_index, 1, 0
+            )
+
+        # ~Get back original board.
+        board[column_index][row_index] = "N"
+
+        if length >= target_length:
+            return column_index
+
+    return None
+
+
+def TwoInAColumn(board):
+    # Find a move that extends a vertical pair to three or more.
+    return _find_building_move(board, "column", 3)
 
 
 def TwoInARow(board):
-  for i in range(6):
-    yellow = 0
-    count = -1
-    for column in board:
-      count = count + 1
-      if column[i] == "y":
-        yellow = yellow + 1
-      elif column[i] == "n" and yellow == 2:
-        if i == 5 or (column[i+1] == "r" or column[i+1] == "y"):
-          return count
-        else:
-          yellow = 0 
-      else:
-        yellow = 0
-
-  return False
-        
-
+    # Find a move that extends a horizontal pair to three or more.
+    return _find_building_move(board, "row", 3)
 
 
 def ThreeInAColumn(board):
-  count=-1
-  for column in board:
-    yellow=0
-    count=count+1
-    for i in column:
-      if i=="y":
-        yellow=yellow+1
-      elif i=="n" and yellow==3:
-        return count
-      else:
-        yellow=0
-  return False 
+    # Find an immediate vertical win.
+    return _find_building_move(board, "column", 4)
+
 
 def ThreeInARow(board):
-  for i in range(6):
-    yellow = 0
-    count = -1
-    for column in board:
-      count = count + 1
-      if column[i] == "y":
-        yellow = yellow + 1
-      elif column[i] == "n" and yellow == 3:
-        if i == 5 or (column[i+1] == "r" or column[i+1] == "y"):
-          return count
-        else:
-          yellow = 0 
-      else:
-        yellow = 0
+    # Find an immediate horizontal win.
+    return _find_building_move(board, "row", 4)
 
-  return False
 
-def EasyWin(Board):
-  if ThreeInAColumn(Board)!=False:
-   return ThreeInAColumn(Board) 
-  elif ThreeInARow(Board)!=False:
-    return ThreeInARow(Board)
+def EasyWin(board):
+    # Priority 1: Win immediately.
+    move = ThreeInAColumn(board)
+    if move is not None:
+        return move
+
+    move = ThreeInARow(board)
+    if move is not None:
+        return move
+
+    # Priority 2: Extend an existing pair to three.
+    move = TwoInAColumn(board)
+    if move is not None:
+        return move
+
+    move = TwoInARow(board)
+    if move is not None:
+        return move
+
+    # No suitable move found.
+    return None
+
+
+
 
