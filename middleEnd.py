@@ -73,8 +73,8 @@ def turn(player):
     move = int()#;
     
     if player=="Y":
-        move = BotMove()#;
-        
+        move,strength = BotMove()#;
+        print("move strength=",strength)#;
     else:
         # else, it's the user's turn (R);
         # get the user's move from the front end once ready;
