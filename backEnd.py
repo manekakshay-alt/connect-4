@@ -134,8 +134,11 @@ def BotMove():
        # get the botMove;
        move:int#;
        strength:float#;
-       move,strength=botMove(getBoard(),4,"Y");
+       moveData=botMove(getBoard(),3,"Y");
+       move=moveData[0]#;
+       strength=moveData[1]#;
        # if the move isn't legal or the strength is 0;
+       print("move=",move)#;
        if movePossible(move,Board)==False or strength==0.0:
               legality=False
               while legality!=True:
@@ -145,7 +148,7 @@ def BotMove():
                      #ENDIF
               #ENDWHILE
        #ENDIF
-       return move#;
+       return move,strength#;
 #ENDMETHOD
   
 def clear(board):
