@@ -3,26 +3,26 @@ import copy#;
 # import player and bot moves from the back end;
 from moves import yellowMove,redMove#;
 
-def botMove(board:list, depth:int, turn:str)->(int,float):
+def botMove(board:list, depth:int, turn:str)->(list):
     # flag for 'checkmate';
     evaluation:float#;
 
     # if the depth is 0, return;
     if depth==0:
-        return 1,0.0#;
+        return [1,0.0]#;
     #ENDIF
 
     # decrement depth;
     depth = depth-1#;
     
     # get the 3 moves from the WhatTimeIsItBot;
-    moves:list = []#;
+    moves:list = None#;
     moves = whatTimeIsIt(board,turn)#;
 
-    # if any of the moves are 1.0, instant return;
+    # if any of the moves are 1.0 (or more), instant return;
     for move in moves:
         if move[1]>=1.0:
-            return move[1],flag#;
+            return [move[0],1.0]#;
         #ENDIF
     #ENDFOR
 
@@ -49,16 +49,22 @@ def botMove(board:list, depth:int, turn:str)->(int,float):
             yellowMove(move[0],currentBoard)#;
         #ENDIF
         # recur with this move;
-        currentMove,currentEvaluation=botMove(currentBoard,depth,inject)#;
+        moveData=botMove(currentBoard,depth,inject)#;
+        currentMove=moveData[0]#;
+        currentEvaluation=moveData[1]#;
         # if it's the best move, make bestMove this move and bestEvaluation this evaluation;
         if currentEvaluation > bestEvaluation:
             bestEvaluation=currentEvaluation#;
             bestMove=currentMove#;
+            print("newBest=",bestMove,bestEvaluation)#;
         #ENDIF
     #ENDFOR
 
     # return this depth bestMove and Evaluation;
-    return bestMove,bestEvaluation#;
+    if depth==2:
+        print("exit=",bestMove,bestEvaluation)#;
+    #ENDIF
+    return [bestMove,bestEvaluation]#;
 #ENDMETHOD;
 
 def whatTimeIsIt(board:list,turn:str)->list:
@@ -74,29 +80,28 @@ def whatTimeIsIt(board:list,turn:str)->list:
     #ENDFOR
 
     # determine if it is the start, middle or end of the game and apply bonuses;
-    startBonus:int=0#;
-    middleBonus:int=0#;
-    endBonus:int=0#;
+    startBonus:float=0.0#;
+    middleBonus:float=0.0#;
+    endBonus:float=0.0#;
     if pieces<8:
         # early game;
-        startBonus=0.45#;
-        endBonus=0.12#;
+        startBonus=0.1#;
+        endBonus=0.05#;
     elif pieces<27:
         # mid-game;
-        startBonus=0.05#;
-        middleBonus=0.5#;
-        endBonus=0.05#;
+        startBonus=0.02#;
+        middleBonus=0.1#;
+        endBonus=0.02#;
     else:
         # end game;
-        middleBonus=0.15#;
-        endBonus=0.6#;
+        middleBonus=0.1#;
+        endBonus=0.3#;
     #ENDIF
     
     # create a list with all evaluations and then apply each bonus;
     evaluations:list = []#;
     # end;
     evaluations.append(EvalTie(board,turn))#;
-    print(evaluations)#;
     evaluations[0][1]=evaluations[0][1]+endBonus#;
     # early;
     #evaluations.append(EvalThreat(board))#;
@@ -116,17 +121,19 @@ def whatTimeIsIt(board:list,turn:str)->list:
     top3:list = [[1,0.0],[1,0.0],[1,0.0]]##;
 
     # for each evaluation, if it is in the top 3, add it to the list;
-    for evaluation in evaluations:   
+    for evaluation in evaluations:
+        print("ev:",evaluation)#;
         # for each item in the top 3;
-        for item in top3:
+        for itemPos in range(0,2):
             # if this bot's evaluation is better than this item in the top3, replace it;
-            if evaluation[1]>=item[1]:
-                item=evaluation#;
+            if evaluation[1]>=top3[itemPos][1]:
+                top3[itemPos]=evaluation#;
                 break#; // break out to stop complete overriding;
             #ENDIF
         #ENDFOR
     #ENDFOR
-    
+
+    print(top3)#;
     return top3#;
 #ENDMETHOD
 
@@ -138,6 +145,91 @@ def getThreats(board:list,team:str)->list:
     returnThreats.extend(getRowThreats(board,team))#;
     returnThreats.extend(getDiagonalThreats(board,team))#;
     return returnThreats#;
+#ENDMETHOD
+
+def threatIsActable(board:list,threat:list)->bool:
+    #print("investigating:",threat)#;
+    if threat[0]>7 or threat[0]<1 or threat[1]<1 or threat[1]>6:
+        return False#; // reject invalid input;
+    #ENDIF
+    verdict:bool=False#; // assume the verdict is false;
+    # for each point of the threat, try and see if there's space to block it;
+    # if there is, the verdict is true, else it's false;
+
+    # flag if the tiles below each piece must be checked (e.g if it's on the bottom row or not);
+    bottomRow:bool=False#; // assume false;
+    if threat[1]==1:
+        bottomRow=True#;
+    #ENDIF // else, false;
+
+    # if this is a diagonal threat, treat it differently;
+    if threat[2]==True: ## TO CODE!!!
+        # AAAAAAAAAAAAAAAAAAAAAAAAAAaaa
+        verdict=True#; // figure that one out later xdd
+    else:
+        # n/e/w/s basic threat;
+        if threat[3]=="N":
+            # North case;
+            # check the last 2 tiles;
+            if board[threat[0]-1][threat[1]-1]=="N" or board[threat[0]-1][threat[1]-2]=="N":
+                verdict=True#;
+            #ENDIF
+        elif threat[3]=="E":
+            # East case;
+            #for each of the tiles, if there is a spot free, check if you can play there;
+            for tile in range(0,3,1):
+                if threat[0]+tile>7 or threat[0]+tile<1:
+                    return False#; // return false, you can't act on something outside the board;
+                #ENDIF
+                if board[threat[0]-1+tile][threat[1]-1]=="N":
+                    # check for bottom row flag;
+                    if bottomRow==True:
+                        verdict=True#; // it's true as this is a playable blank space;
+                        break#; // break for optimisation;
+                    else:
+                        # bottom row is false, check under for filled tile;
+                        if board[threat[0]-1+tile][threat[1]-2]!="N":
+                            verdict=True#;
+                            break#; // break for optimisation;
+                        else:
+                            # there is an empty space below this tile, it's not actable here;
+                            pass#; // (assume false);
+                        #ENDIF
+                        # if not break, continue to check for other slots;
+                    #ENDIF
+                #ENDIF
+            #ENDFOR
+        elif threat[3]=="W":
+            # West case;
+            #for each of the tiles, if there is a spot free, check if you can play there;
+            for tile in range(0,-3,-1):
+                if threat[0]+tile>7 or threat[0]+tile<1:
+                    return False#; // return false, you can't act on something outside the board;
+                #ENDIF
+                if board[threat[0]-1+tile][threat[1]-1]=="N":
+                    # check for bottom row flag;
+                    if bottomRow==True:
+                        verdict=True#; // it's true as this is a playable blank space;
+                        break#; // break for optimisation;
+                    else:
+                        # bottom row is false, check under for filled tile;
+                        if board[threat[0]-1+tile][threat[1]-2]!="N":
+                            verdict=True#;
+                            break#; // break for optimisation;
+                        else:
+                            # there is an empty space below this tile, it's not actable here;
+                            pass#; // (assume false);
+                        #ENDIF
+                        # if not break, continue to check for other slots;
+                    #ENDIF
+                #ENDIF
+            #ENDFOR
+        else:
+            pass#; // else, error;
+        #ENDIF
+    #ENDIF
+
+    return verdict#;
 #ENDMETHOD
 
 def getColumnThreats(board:list,team:str)->list:
@@ -183,12 +275,19 @@ def getColumnThreats(board:list,team:str)->list:
                 threatContinue=0#;
                 continueThreat=False#;
 
-                # document;
-                threats.append([columnCount+1,rowCount-3,False,"N",threatCounter])#;
-                threatCounter=0#;
+                # if threat is of adequate length and can be acted on...;
+                if threatCounter>1 and threatIsActable(board,[columnCount+1,rowCount-3+1,False,"N"])==True:
+                    # document;
+                    threats.append([columnCount+1,rowCount-3+1,False,"N",threatCounter])#;
+                    threatCounter=0#;
+                #ENDIF
             #ENDIF
             rowCount=rowCount+1#; // increment rowCount;
         #ENDFOR
+        # clear threat data between columns;
+        continueThreat=False#;
+        threatCounter = 0#;
+        threatContinue = 0#;
         columnCount=columnCount+1#; // increment columnCount;
     #ENDFOR
                 
@@ -259,9 +358,12 @@ def getRowThreats(board:list,team:str)->list:
                     else:
                         direction="W"#;
                     #ENDIF
-                    threatHold:list=[threat.originColumn,threat.originRow,False,direction,threat.threatCounter]#;
-                    threats.append(threatHold)#;
-                    threatPositions.append(threatCount)#;
+                    # if the threat is of adequate length and can be acted upon, document;
+                    if threat.threatCounter>1 and threatIsActable(board,[threat.originColumn,threat.originRow,False,direction])==True:
+                        threatHold:list=[threat.originColumn,threat.originRow,False,direction,threat.threatCounter]#;
+                        threats.append(threatHold)#;
+                        threatPositions.append(threatCount)#;
+                    #ENDIF
                 #ENDIF
             #ENDFOR
 
@@ -273,6 +375,8 @@ def getRowThreats(board:list,team:str)->list:
                 threatsRemoved=threatsRemoved+1#;
             #ENDFOR
         #ENDFOR
+        # clear threatInstances, all threat instances should not carry over from each previous row;
+        threatInstances = []#;
     #ENDFOR
                 
     return threats#;
@@ -325,7 +429,7 @@ def getDiagonalThreats(board:list,team:str)->list:
 
             if currentPiece[0]==team:
                 # generate a new threat;
-                newThreat=threatInstance(currentPiece[1][0],currentPiece[1][1],False)#;
+                newThreat=threatInstance(currentPiece[1][0]+1,currentPiece[1][1]+1,False)#;
                 threatInstances.append(newThreat)#;
 
                 # for each threat, continue/increment;
@@ -339,7 +443,7 @@ def getDiagonalThreats(board:list,team:str)->list:
             else:
                 # else:
                 # generate a new Westward threat;
-                newThreat=threatInstance(currentPiece[1][0],currentPiece[1][1],True)#;
+                newThreat=threatInstance(currentPiece[1][0]+1,currentPiece[1][1]+1,True)#;
                 threatInstances.append(newThreat)#;
                 
                 # for each threat, increment threatContinue only;
@@ -360,9 +464,12 @@ def getDiagonalThreats(board:list,team:str)->list:
                     else:
                         direction="W"#;
                     #ENDIF
-                    threatHold:list=[threat.originColumn,threat.originRow,True,direction,threat.threatCounter]#;
-                    threats.append(threatHold)#;
-                    threatPositions.append(threatCount)#;
+                    # if the threat is of adequate length and can be acted on, document;
+                    if threat.threatCounter>1 and threatIsActable(board,[threat.originColumn,threat.originRow,True,direction])==True:
+                        threatHold:list=[threat.originColumn,threat.originRow,True,direction,threat.threatCounter]#;
+                        threats.append(threatHold)#;
+                        threatPositions.append(threatCount)#;
+                    #ENDIF
                 #ENDIF
             #ENDFOR
 
@@ -374,29 +481,32 @@ def getDiagonalThreats(board:list,team:str)->list:
                 threatsRemoved=threatsRemoved+1#;
             #ENDFOR
         #ENDFOR
+        # do not continue threats beyond a diagonal;
+        threatInstances = []#;
     #ENDFOR
 
     return threats#;
 #ENDMETHOD
 
 def getThreatSlots(board:list,increment:int,originColumn:int,originRow:int,diagonal:bool,vertical:bool)->list:
-    # get the team being pointed at;
     # catch erroneous data;
-    if originColumn>6 or originColumn<0 or originRow>5 or originRow<0:
+    if originColumn>7 or originColumn<1 or originRow>6 or originRow<1:
         return []#;
     #ENDIF
+    # get the team being pointed at;
     team:str = board[originColumn][originRow]#;
 
-    threatSlots:list = []#; // return list;
+    threatSlots:list = []#; //for the return list;
 
-    # continue for 4:
-    for i in range(4):
+    # continue for 4 pieces:
+    for i in range(0,4,1):
+        print("gts",originColumn,originRow)#;
         # if the index is out of range, skip the error;
-        if originColumn>6 or originRow>5 or originColumn<0 or originRow<0:
+        if originColumn>7 or originRow>6 or originColumn<1 or originRow<1:
             continue#;
         #ENDIF
-        # if this piece isn't on the original team, add it to the return list;
-        if board[originColumn][originRow]!=team:
+        # if this piece is blank, add it to the return list;
+        if board[originColumn-1][originRow-1]=="N":
             # add the column of this threat slot;
             threatSlots.append(originColumn)#;
         #ENDIF
@@ -550,7 +660,7 @@ def EvalBuild(board:list,turn:str)->list:
             bestMove[0]=move#;
             bestMove[1]=strength#;
         #ENDIF
-    #ENDFOR
+    #ENDFOR (for each possible move from this position);
 
     # if blocked still == True, then all moves remove threats, return strength 0;
     if blocked==True:
@@ -561,7 +671,8 @@ def EvalBuild(board:list,turn:str)->list:
     if bestMove[1]>1:
         bestMove[1]=1.0#;
     #ENDIF
-    
+
+    print("bestMove=",bestMove)#;
     return bestMove#;
 #ENDMETHOD
 
@@ -585,12 +696,14 @@ def EvalTie(board:list,turn:str)->list:
 
     # if there is a 3-threat from the player, return immediately with strength 1.0;
     for threat in playerThreats:
+        print("thrt:",threat)#;
         if threat[4]==3:
             # go to this threat and block it;
             if threat[2]==False:
                 # non diagonal;
                 if threat[3]=="N":
                     # column threat, play in this column;
+                    print("ret. inst 1")#;
                     return [threat[0],1.0]#;
                 else:
                     # row threat, find the direction and origin;
@@ -605,10 +718,13 @@ def EvalTie(board:list,turn:str)->list:
 
                     # find the first blocking move and return;
                     # catch if need the first responce or any;
-                    if len(getThreatSlots(board,direction,threat[0]-1,threat[1]-1,False,False))>1:
-                        return [getThreatSlots(board,direction,threat[0]-1,threat[1]-1,False,False)[0],1.0]#;
+                    if len(getThreatSlots(board,direction,threat[0],threat[1],False,False))>1:
+                        print("ret. inst 2.1")#;
+                        return [getThreatSlots(board,direction,threat[0],threat[1],False,False)[0],1.0]#;
                     else:
-                        return [getThreatSlots(board,direction,threat[0]-1,threat[1]-1,False,False),1.0]#;
+                        print("ret. inst 2.2 with",direction,threat[0],threat[1],False,False)#;
+                        print([getThreatSlots(board,direction,threat[0],threat[1],False,False),1.0])#;
+                        return [getThreatSlots(board,direction,threat[0],threat[1],False,False)[0],1.0]#;
                     #ENDIF
                 #ENDIF
             else:
@@ -623,10 +739,13 @@ def EvalTie(board:list,turn:str)->list:
 
                 # find the first blocking move and return;
                 # catch if the first responce is needed or any;
-                if len(getThreatSlots(board,direction,threat[0]-1,threat[1]-1,True,False))>1:
-                    return [getThreatSlots(board,direction,threat[0]-1,threat[1]-1,True,False)[0],1.0]#;
+                if len(getThreatSlots(board,direction,threat[0],threat[1],True,False))>1:
+                    print("ret. inst 3.1")#;
+                    return [getThreatSlots(board,direction,threat[0],threat[1],True,False)[0],1.0]#;
                 else:
-                    return [getThreatSlots(board,direction,threat[0]-1,threat[1]-1,True,False),1.0]#;
+                    print("ret. inst 3.2 with",direction,threat[0],threat[1],False,False)#;
+                    print([getThreatSlots(board,direction,threat[0],threat[1],True,False),1.0])#;
+                    return [getThreatSlots(board,direction,threat[0],threat[1],True,False)[0],1.0]#;
                 #ENDIF
             #ENDIF
                 
@@ -656,7 +775,7 @@ def EvalTie(board:list,turn:str)->list:
             threatSlots=getThreatSlots(board,increment,threat[0]-1,threat[1]-1,threat[2],vertical)#;
 
             # select the most central threat slot;
-            minimum:int=7#;
+            minimum:int=8#;
             bestSlot:int=0#;
             for threatSlot in threatSlots:
                 # if this is the closest slot to the centre, then set it to be the choice;
@@ -667,6 +786,7 @@ def EvalTie(board:list,turn:str)->list:
             #ENDFOR
             # if there were no updates to bestSlot, return strength 0;
             if bestSlot==0:
+                print("ret. inst 4")#;
                 return [1,0.0]#;
             #ENDIF
 
@@ -689,11 +809,12 @@ def EvalTie(board:list,turn:str)->list:
         for element in range(len(counts)):
             if counts[element]>=greatest:
                 greatest=counts[element]#;
-                greatestPosition=element#;
+                greatestPosition=element+1#;
             #ENDIF
         #ENDFOR
 
         # return;
+        print("ret. inst 5")#;
         return [greatestPosition,0.75]#;
     #ENDIF
 
@@ -713,10 +834,12 @@ def EvalTie(board:list,turn:str)->list:
 
         if columnFull==False:
             # if the column isn't full, play here;
+            print("ret. inst 6")#;
             return [move,0.65]#;
         #ENDIF
     #ENDFOR
 
     # if someone went awry, return the default case;
+    print("ret. inst end.")#;
     return [1,0.0]#;
 #ENDMETHOD
