@@ -148,7 +148,6 @@ def getThreats(board:list,team:str)->list:
 #ENDMETHOD
 
 def threatIsActable(board:list,threat:list)->bool:
-    #print("investigating:",threat)#;
     if threat[0]>7 or threat[0]<1 or threat[1]<1 or threat[1]>6:
         return False#; // reject invalid input;
     #ENDIF
@@ -163,9 +162,51 @@ def threatIsActable(board:list,threat:list)->bool:
     #ENDIF // else, false;
 
     # if this is a diagonal threat, treat it differently;
-    if threat[2]==True: ## TO CODE!!!
-        # AAAAAAAAAAAAAAAAAAAAAAAAAAaaa
-        verdict=True#; // figure that one out later xdd
+    if threat[2]==True:
+        if threat[3]=="E":
+            # left diagonal;
+            for tile in range(0,3):
+                if threat[0]+tile>7 or threat[0]+tile<1 or threat[1]+tile>6 or threat[1]+tile<1:
+                    return False#; // return false, you can't act on something outside the board;
+                #ENDIF
+                # for each of the 4 pieces, if this piece is empty;
+                if board[threat[0]-1+tile][threat[1]-1+tile]=="N":
+                    # check for bottom row flag;
+                    if bottomRow==True:
+                        verdict=True#;
+                        break#; // break for optimisation;
+                    else:
+                        # if the piece below this one isn't free;
+                        if board[threat[0]-1+tile][threat[1]-1-1+tile]!="N":
+                            verdict=True#;
+                            break#; // break for efficient program/optimisation;
+                        #ENDIF
+                    #ENDIF
+                #ENDIF
+            #ENDFOR
+        else:
+            # right diagonal (threat[3]=="W");
+            # left diagonal;
+            for tile in range(0,-3,-1):
+                if threat[0]+tile>7 or threat[0]+tile<1 or threat[1]+tile>6 or threat[1]+tile<1:
+                    return False#; // return false, you can't act on something outside the board;
+                #ENDIF
+                # for each of the 4 pieces, if this piece is empty;
+                if board[threat[0]-1+tile][threat[1]-1+tile]=="N":
+                    # check for bottom row flag;
+                    if bottomRow==True:
+                        verdict=True#;
+                        break#; // break for optimisation;
+                    else:
+                        # if the piece below this one isn't free;
+                        if board[threat[0]-1+tile][threat[1]-1-1+tile]!="N":
+                            verdict=True#;
+                            break#; // break for efficient program/optimisation;
+                        #ENDIF
+                    #ENDIF
+                #ENDIF
+            #ENDFOR
+        #ENDIF
     else:
         # n/e/w/s basic threat;
         if threat[3]=="N":
