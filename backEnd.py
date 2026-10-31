@@ -124,7 +124,7 @@ def diagonal4inaRow(board):
 def win():
   if row4inaRow(Board)=="RED" or  column4inaRow(Board)=="RED" or diagonal4inaRow(Board)=="RED":
     return True
-  elif row4inaRow(Board)=="YELLOW" or  column4inaRow(Board)=="YELLOW" or diagonal4inaRow=="YELLOW":
+  elif row4inaRow(Board)=="YELLOW" or  column4inaRow(Board)=="YELLOW" or diagonal4inaRow(Board)=="YELLOW":
     return True
   else:
     return False 
